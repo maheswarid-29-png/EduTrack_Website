@@ -2,110 +2,247 @@
 
 ## Project Overview
 
-EduTrack is an AI-powered student management system designed to help educational institutions monitor student attendance, academic performance, and overall progress through an intelligent and user-friendly platform.
+EduTrack is an AI-powered student performance and attendance management system developed for the MANTRA IGNITE 2026 Project Competition.
 
-The system provides a responsive web application, performance analytics dashboard, and AI-based assistance to improve student learning outcomes and simplify academic management.
+The system helps teachers and students monitor attendance, academic performance, subject-wise marks and overall academic progress through a responsive full-stack web application.
+
+EduTrack integrates:
+
+- Full-Stack Web Application
+- MongoDB Database
+- REST API Backend
+- Power BI Analytics
+- Generative AI Student Assistant
+- n8n Automation Workflow
+- Responsive Web Design
+
+---
+
+## Domain
+
+**Education**
+
+## Project Title
+
+**EduTrack: AI-Powered Student Performance & Attendance Management System**
 
 ---
 
 ## Objectives
 
 - Monitor student attendance efficiently
-- Analyze academic performance using data visualization
-- Track student learning progress
-- Provide AI-based learning assistance
-- Improve communication between students and teachers
+- Track academic performance and subject-wise marks
+- Analyze student progress
+- Provide teachers with student management features
+- Provide students with their academic information
+- Provide AI-based assistance for academic queries
+- Provide data visualization through Power BI
+- Automate academic-related workflows using n8n
 
 ---
 
-## Features
+# Main Features
 
-### 🌐 Responsive Web Application
-- Student login portal
-- Teacher login portal
-- Student performance dashboard
-- Attendance tracking
-- Academic performance monitoring
+## 1. Student Module
 
-### 📊 Power BI Dashboard
-- Student performance analysis
-- Attendance insights
-- KPI cards and visual reports
+Students can:
 
-### 🤖 AI Chatbot
-- Student learning assistance
-- Academic guidance
-- Query-based support
-
-### ⚙️ Automation Workflow
-- Automated notifications and data updates using n8n
+- Login to the student portal
+- View their profile
+- View attendance percentage
+- View present and absent records
+- View subject-wise marks
+- View average academic performance
+- Identify their best-performing subject
+- Identify subjects that need improvement
+- Access the AI Student Assistant
+- View Power BI analytics
 
 ---
 
-## Technologies Used
+## 2. Teacher Module
 
-### Frontend
+Teachers can:
+
+- Login to the teacher portal
+- View total registered students
+- View average attendance
+- View average academic performance
+- View registered students
+- Open individual student profiles
+- View student attendance details
+- View student performance details
+- Access Power BI analytics
+- Access the AI Student Assistant
+
+---
+
+## 3. Attendance Management
+
+The application provides:
+
+- Student attendance records
+- Present and absent status
+- Attendance percentage
+- Individual attendance details
+- Teacher access to student attendance information
+
+---
+
+## 4. Academic Performance
+
+The application provides:
+
+- Subject-wise marks
+- Exam details
+- Percentage calculation
+- Average performance
+- Best-performing subject
+- Subject requiring improvement
+
+---
+
+## 5. Power BI Analytics
+
+Power BI is used to provide detailed analytics and visualization of:
+
+- Student attendance
+- Academic performance
+- Subject-wise performance
+- Key performance indicators
+- Student progress
+
+The Power BI dashboard provides interactive analytics for better academic decision-making.
+
+---
+
+## 6. AI Student Assistant
+
+EduTrack includes an AI-based student assistant that helps students ask questions about:
+
+- Attendance
+- Average performance
+- Subject marks
+- Best subject
+- Subjects requiring improvement
+- Course information
+- Academic progress
+
+Example queries:
+
+- "What is my attendance?"
+- "What is my average performance?"
+- "Which subject is my best?"
+- "Which subject needs improvement?"
+- "Show me my marks."
+
+---
+
+## 7. n8n Automation
+
+n8n is used for workflow automation.
+
+The automation component can be used for:
+
+- Automated notifications
+- Data synchronization
+- Academic-related workflow automation
+- Trigger-based actions
+- Scheduled tasks
+
+This reduces repetitive manual work and demonstrates automation integration in the project.
+
+---
+
+# Technologies Used
+
+## Frontend
+
 - HTML5
 - CSS3
 - JavaScript
 
-### Analytics
+## Backend
+
+- Node.js
+- Express.js
+- REST APIs
+
+## Database
+
+- MongoDB
+- Mongoose
+
+## Analytics
+
 - Microsoft Power BI
 
-### AI
-- Generative AI Chatbot
+## Artificial Intelligence
 
-### Automation
-- n8n Workflow Automation
+- Generative AI
+- AI Student Assistant
 
-### Version Control
+## Automation
+
+- n8n
+
+## Version Control
+
+- Git
 - GitHub
 
 ---
 
-## Project Structure
+# Project Structure
 
 ```text
-EduTrack
+EduTrack_Website/
 │
 ├── index.html
 ├── about.html
+├── contact.html
+│
 ├── student-login.html
-├── teacher-login.html
 ├── dashboard.html
 ├── attendance.html
 ├── performance.html
 ├── chatbot.html
-├── contact.html
+│
+├── teacher-login.html
+├── teacher-dashboard.html
+├── teacher-students.html
+├── teacher-student-profile.html
+├── teacher-attendance.html
+├── teacher-performance.html
+│
 ├── style.css
 ├── script.js
 │
-└── images
-    └── education.jpg
-```
----
-
-## Team
-
-MANTRA IGNITE 2026 Project Competition
-
-Domain: Education
-
-Project Title:
-EduTrack: AI-Powered Student Performance & Attendance Management System
-
----
-
-## Future Enhancements
-
-- Real-time database integration
-- Advanced AI recommendations
-- User authentication system
-- Automated email notifications
-- Cloud deployment
-
----
-
-## Acknowledgement
-
-Developed as part of MANTRA 2026 Summer School Project Competition.
+├── images/
+│   └── education.jpg
+│
+├── backend/
+│   ├── server.js
+│   ├── test.js
+│   ├── package.json
+│   ├── package-lock.json
+│   │
+│   ├── config/
+│   │   └── db.js
+│   │
+│   ├── models/
+│   │   ├── Attendance.js
+│   │   ├── Performance.js
+│   │   ├── Student.js
+│   │   └── Teacher.js
+│   │
+│   └── routes/
+│       ├── attendance.js
+│       ├── chatbot.js
+│       ├── dashboard.js
+│       ├── performance.js
+│       ├── student.js
+│       └── teacher.js
+│
+├── .gitignore
+└── README.md
