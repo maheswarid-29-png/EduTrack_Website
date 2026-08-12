@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Student Attendance | EduTrack</title>
+
+    <meta name="description"
+          content="EduTrack teacher attendance management page">
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+
+    <!-- NAVIGATION -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            EduTrack
+        </div>
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="teacher-dashboard.html">
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="teacher-students.html">
+                    Students
+                </a>
+            </li>
+
+            <li>
+                <a href="index.html">
+                    Home
+                </a>
+            </li>
+
+        </ul>
+
+        <div class="login-buttons">
+
+            <a href="#" onclick="logout()">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- ATTENDANCE PAGE -->
+
+    <main class="attendance-page">
+
+        <h1>
+            Student Attendance 📊
+        </h1>
+
+        <p>
+            View attendance details of the selected student.
+        </p>
+
+
+        <!-- STUDENT INFORMATION -->
+
+        <div
+            class="performance-summary"
+            id="studentInfo">
+
+            Loading student information...
+
+        </div>
+
+
+        <!-- ATTENDANCE SUMMARY -->
+
+        <div
+            class="dashboard-cards"
+            style="margin-top:30px;">
+
+
+            <div class="dashboard-card">
+
+                <h2 id="attendancePercentage">
+                    --
+                </h2>
+
+                <h3>
+                    Attendance
+                </h3>
+
+                <p>
+                    Overall attendance
+                </p>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <h2 id="presentCount">
+                    --
+                </h2>
+
+                <h3>
+                    Present
+                </h3>
+
+                <p>
+                    Classes attended
+                </p>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <h2 id="absentCount">
+                    --
+                </h2>
+
+                <h3>
+                    Absent
+                </h3>
+
+                <p>
+                    Classes missed
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ATTENDANCE TABLE -->
+
+        <div
+            style="margin-top:40px;">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="attendanceTable">
+
+                    <tr>
+
+                        <td colspan="2">
+                            Loading...
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <div style="margin-top:30px;">
+
+            <a
+                href="teacher-dashboard.html"
+                class="login-btn">
+
+                ← Back to Dashboard
+
+            </a>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            © 2026 EduTrack |
+            AI Powered Student Performance
+            & Attendance Management System
+        </p>
+
+    </footer>
+
+
+
+    <script>
+
+
+        /* =========================
+           SELECTED STUDENT
+        ========================== */
+
+        const studentEmail =
+            localStorage.getItem(
+                "selectedStudentEmail"
+            );
+
+
+        if (!studentEmail) {
+
+            window.location.href =
+                "teacher-students.html";
+
+        }
+
+
+
+        /* =========================
+           LOAD STUDENT PROFILE
+        ========================== */
+
+        async function loadStudent() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        `http://localhost:5001/api/students/profile/${encodeURIComponent(studentEmail)}`
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    document.getElementById(
+                        "studentInfo"
+                    ).innerHTML =
+                        `<p>${data.message}</p>`;
+
+                    return;
+
+                }
+
+
+                const student =
+                    data.student;
+
+
+                document.getElementById(
+                    "studentInfo"
+                ).innerHTML = `
+
+                    <h2>
+                        ${student.name}
+                    </h2>
+
+                    <p>
+                        <b>Email:</b>
+                        ${student.email}
+                    </p>
+
+                    <p>
+                        <b>Course:</b>
+                        ${student.course}
+                    </p>
+
+                `;
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Student profile error:",
+                    error
+                );
+
+                document.getElementById(
+                    "studentInfo"
+                ).innerHTML =
+                    "<p>Unable to connect to the server.</p>";
+
+            }
+
+        }
+
+
+
+        /* =========================
+           LOAD ATTENDANCE
+        ========================== */
+
+        async function loadAttendance() {
+
+            try {
+
+                /*
+                 * First try the selected student's
+                 * attendance endpoint.
+                 */
+
+                const response =
+                    await fetch(
+                        `http://localhost:5001/api/attendance/${encodeURIComponent(studentEmail)}`
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                console.log(
+                    "Attendance API response:",
+                    data
+                );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        "Attendance request failed"
+                    );
+
+                }
+
+
+                const attendance =
+                    Array.isArray(data)
+                        ? data
+                        : data.attendance || [];
+
+
+                if (
+                    attendance.length === 0
+                ) {
+
+                    document.getElementById(
+                        "attendanceTable"
+                    ).innerHTML = `
+
+                        <tr>
+
+                            <td colspan="2">
+                                No attendance records found.
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                    document.getElementById(
+                        "attendancePercentage"
+                    ).textContent =
+                        "0%";
+
+                    document.getElementById(
+                        "presentCount"
+                    ).textContent =
+                        "0";
+
+                    document.getElementById(
+                        "absentCount"
+                    ).textContent =
+                        "0";
+
+                    return;
+
+                }
+
+
+
+                /* =========================
+                   CALCULATE ATTENDANCE
+                ========================== */
+
+                const present =
+                    attendance.filter(
+                        record =>
+                            String(
+                                record.status
+                            ).toLowerCase() ===
+                            "present"
+                    ).length;
+
+
+                const absent =
+                    attendance.filter(
+                        record =>
+                            String(
+                                record.status
+                            ).toLowerCase() ===
+                            "absent"
+                    ).length;
+
+
+                const total =
+                    attendance.length;
+
+
+                const percentage =
+                    (
+                        present /
+                        total
+                    ) * 100;
+
+
+
+                /* =========================
+                   DISPLAY SUMMARY
+                ========================== */
+
+                document.getElementById(
+                    "attendancePercentage"
+                ).textContent =
+                    `${percentage.toFixed(2)}%`;
+
+
+                document.getElementById(
+                    "presentCount"
+                ).textContent =
+                    present;
+
+
+                document.getElementById(
+                    "absentCount"
+                ).textContent =
+                    absent;
+
+
+
+                /* =========================
+                   DISPLAY TABLE
+                ========================== */
+
+                const table =
+                    document.getElementById(
+                        "attendanceTable"
+                    );
+
+
+                table.innerHTML = "";
+
+
+                attendance.forEach(
+                    function(record) {
+
+                        const row =
+                            document.createElement(
+                                "tr"
+                            );
+
+
+                        const dateCell =
+                            document.createElement(
+                                "td"
+                            );
+
+
+                        const statusCell =
+                            document.createElement(
+                                "td"
+                            );
+
+
+                        const date =
+                            record.date ||
+                            record.attendanceDate ||
+                            record.createdAt;
+
+
+                        if (date) {
+
+                            const parsedDate =
+                                new Date(date);
+
+
+                            if (
+                                !isNaN(
+                                    parsedDate.getTime()
+                                )
+                            ) {
+
+                                dateCell.textContent =
+                                    parsedDate.toLocaleDateString(
+                                        "en-IN",
+                                        {
+                                            day:
+                                                "2-digit",
+
+                                            month:
+                                                "2-digit",
+
+                                            year:
+                                                "numeric"
+                                        }
+                                    );
+
+                            }
+
+                            else {
+
+                                dateCell.textContent =
+                                    date;
+
+                            }
+
+                        }
+
+                        else {
+
+                            dateCell.textContent =
+                                "Date unavailable";
+
+                        }
+
+
+                        statusCell.textContent =
+                            record.status ||
+                            "Unknown";
+
+
+                        if (
+                            String(
+                                record.status
+                            ).toLowerCase() ===
+                            "present"
+                        ) {
+
+                            statusCell.className =
+                                "present";
+
+                        }
+
+                        else if (
+                            String(
+                                record.status
+                            ).toLowerCase() ===
+                            "absent"
+                        ) {
+
+                            statusCell.className =
+                                "absent";
+
+                        }
+
+
+                        row.appendChild(
+                            dateCell
+                        );
+
+
+                        row.appendChild(
+                            statusCell
+                        );
+
+
+                        table.appendChild(
+                            row
+                        );
+
+                    }
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Attendance error:",
+                    error
+                );
+
+
+                document.getElementById(
+                    "attendanceTable"
+                ).innerHTML = `
+
+                    <tr>
+
+                        <td colspan="2">
+
+                            Unable to connect
+                            to the server.
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+
+        }
+
+
+
+        /* =========================
+           LOGOUT
+        ========================== */
+
+        function logout() {
+
+            localStorage.removeItem(
+                "teacherLoggedIn"
+            );
+
+            localStorage.removeItem(
+                "selectedStudentEmail"
+            );
+
+            window.location.href =
+                "teacher-login.html";
+
+        }
+
+
+
+        /* =========================
+           START
+        ========================== */
+
+        loadStudent();
+
+        loadAttendance();
+
+
+    </script>
+
+
+</body>
+
+</html>

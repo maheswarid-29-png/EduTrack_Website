@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Teacher Dashboard | EduTrack</title>
+
+    <meta name="description"
+          content="EduTrack teacher dashboard for managing students, attendance and performance">
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+
+    <!-- =========================
+         NAVIGATION
+    ========================== -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            EduTrack
+        </div>
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="teacher-dashboard.html">
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="teacher-students.html">
+                    Students
+                </a>
+            </li>
+
+            <li>
+                <a href="index.html">
+                    Home
+                </a>
+            </li>
+
+        </ul>
+
+        <div class="login-buttons">
+
+            <a href="#" onclick="logout()">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- =========================
+         TEACHER DASHBOARD
+    ========================== -->
+
+    <main class="dashboard">
+
+
+        <h1>
+            Welcome, Teacher 👋
+        </h1>
+
+        <p>
+            Manage students, attendance and academic performance.
+        </p>
+
+
+
+        <!-- =========================
+             TEACHER OVERVIEW
+        ========================== -->
+
+        <div
+            class="dashboard-cards"
+            style="margin-bottom:40px;">
+
+
+            <!-- TOTAL STUDENTS -->
+
+            <div class="dashboard-card">
+
+                <h2 id="totalStudents">
+                    --
+                </h2>
+
+                <h3>
+                    Total Students
+                </h3>
+
+                <p>
+                    Registered students
+                </p>
+
+            </div>
+
+
+
+            <!-- AVERAGE ATTENDANCE -->
+
+            <div class="dashboard-card">
+
+                <h2 id="teacherAttendance">
+                    --
+                </h2>
+
+                <h3>
+                    Average Attendance
+                </h3>
+
+                <p>
+                    Overall attendance
+                </p>
+
+            </div>
+
+
+
+            <!-- AVERAGE PERFORMANCE -->
+
+            <div class="dashboard-card">
+
+                <h2 id="teacherPerformance">
+                    --
+                </h2>
+
+                <h3>
+                    Average Performance
+                </h3>
+
+                <p>
+                    Overall academic score
+                </p>
+
+            </div>
+
+
+
+            <!-- NEEDS ATTENTION -->
+
+            <div class="dashboard-card">
+
+                <h2>
+                    ⚠️
+                </h2>
+
+                <h3>
+                    Needs Attention
+                </h3>
+
+                <p id="studentsAttention">
+                    Loading...
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             TEACHER ACTIONS
+        ========================== -->
+
+        <div
+            class="dashboard-cards">
+
+
+            <!-- REGISTERED STUDENTS -->
+
+            <div class="dashboard-card">
+
+                <h2>
+                    👨‍🎓
+                </h2>
+
+                <h3>
+                    Registered Students
+                </h3>
+
+                <p>
+                    View all registered students.
+                </p>
+
+                <button
+                    class="login-btn"
+                    onclick="viewStudents()">
+
+                    View Students
+
+                </button>
+
+            </div>
+
+
+
+            <!-- ATTENDANCE -->
+
+            <div class="dashboard-card">
+
+                <h2>
+                    📊
+                </h2>
+
+                <h3>
+                    Attendance
+                </h3>
+
+                <p>
+                    View student attendance records.
+                </p>
+
+                <button
+                    class="login-btn"
+                    onclick="viewAttendance()">
+
+                    View Attendance
+
+                </button>
+
+            </div>
+
+
+
+            <!-- PERFORMANCE -->
+
+            <div class="dashboard-card">
+
+                <h2>
+                    📈
+                </h2>
+
+                <h3>
+                    Performance
+                </h3>
+
+                <p>
+                    View student academic performance.
+                </p>
+
+                <button
+                    class="login-btn"
+                    onclick="viewPerformance()">
+
+                    View Performance
+
+                </button>
+
+            </div>
+
+
+
+            <!-- POWER BI -->
+
+            <div class="dashboard-card">
+
+                <h2>
+                    📊
+                </h2>
+
+                <h3>
+                    Power BI Analytics
+                </h3>
+
+                <p>
+                    View detailed student analytics.
+                </p>
+
+                <a
+                    href="https://app.powerbi.com/links/7CZy4fdLJb?ctid=dd2561fb-5505-4dec-ab04-5fabba24a3df&pbi_source=linkShare"
+                    target="_blank"
+                    class="login-btn">
+
+                    Open Power BI
+
+                </a>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =========================
+             AI ASSISTANT
+        ========================== -->
+
+        <div
+            class="performance-summary"
+            style="margin-top:40px;">
+
+            <h2>
+                🤖 AI Student Assistant
+            </h2>
+
+            <p>
+                Ask questions about student attendance,
+                marks and academic progress.
+            </p>
+
+            <br>
+
+            <a
+                href="chatbot.html"
+                class="login-btn">
+
+                Open AI Chatbot
+
+            </a>
+
+        </div>
+
+
+
+    </main>
+
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer>
+
+        <p>
+            © 2026 EduTrack |
+            AI Powered Student Performance
+            & Attendance Management System
+        </p>
+
+    </footer>
+
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script>
+
+
+        /* =========================
+           VIEW STUDENTS
+        ========================== */
+
+        function viewStudents() {
+
+            window.location.href =
+                "teacher-students.html";
+
+        }
+
+
+
+        /* =========================
+           VIEW ATTENDANCE
+        ========================== */
+
+        function viewAttendance() {
+
+            window.location.href =
+                "teacher-attendance.html";
+
+        }
+
+
+
+        /* =========================
+           VIEW PERFORMANCE
+        ========================== */
+
+        function viewPerformance() {
+
+            window.location.href =
+                "teacher-performance.html";
+
+        }
+
+
+
+        /* =========================
+           LOGOUT
+        ========================== */
+
+        function logout() {
+
+            localStorage.removeItem(
+                "teacherLoggedIn"
+            );
+
+            localStorage.removeItem(
+                "selectedStudentEmail"
+            );
+
+            window.location.href =
+                "teacher-login.html";
+
+        }
+
+
+
+        /* =========================
+           LOAD TEACHER OVERVIEW
+        ========================== */
+
+        async function loadTeacherOverview() {
+
+            try {
+
+
+                /* =========================
+                   GET REGISTERED STUDENTS
+                ========================== */
+
+                const studentsResponse =
+                    await fetch(
+                        "http://localhost:5001/api/students"
+                    );
+
+
+                const studentsData =
+                    await studentsResponse.json();
+
+
+                const students =
+                    Array.isArray(studentsData)
+                        ? studentsData
+                        : studentsData.students || [];
+
+
+                document.getElementById(
+                    "totalStudents"
+                ).textContent =
+                    students.length;
+
+
+
+                /* =========================
+                   NO STUDENTS
+                ========================== */
+
+                if (students.length === 0) {
+
+                    document.getElementById(
+                        "teacherAttendance"
+                    ).textContent =
+                        "0%";
+
+
+                    document.getElementById(
+                        "teacherPerformance"
+                    ).textContent =
+                        "0%";
+
+
+                    document.getElementById(
+                        "studentsAttention"
+                    ).textContent =
+                        "No students";
+
+
+                    return;
+
+                }
+
+
+
+                /*
+                 * At the moment there is one
+                 * registered student.
+                 *
+                 * We use the first student
+                 * for the dashboard summary.
+                 */
+
+                const student =
+                    students[0];
+
+
+                const email =
+                    student.email;
+
+
+
+                /* =========================
+                   GET ATTENDANCE
+                ========================== */
+
+                const attendanceResponse =
+                    await fetch(
+                        `http://localhost:5001/api/attendance/${encodeURIComponent(email)}`
+                    );
+
+
+                const attendanceData =
+                    await attendanceResponse.json();
+
+
+                const attendance =
+                    Array.isArray(attendanceData)
+                        ? attendanceData
+                        : attendanceData.attendance || [];
+
+
+                let attendancePercentage =
+                    0;
+
+
+                if (
+                    attendance.length > 0
+                ) {
+
+                    const present =
+                        attendance.filter(
+                            record =>
+                                record.status ===
+                                "Present"
+                        ).length;
+
+
+                    attendancePercentage =
+                        (
+                            present /
+                            attendance.length
+                        ) * 100;
+
+                }
+
+
+                document.getElementById(
+                    "teacherAttendance"
+                ).textContent =
+                    `${attendancePercentage.toFixed(2)}%`;
+
+
+
+                /* =========================
+                   GET PERFORMANCE
+                ========================== */
+
+                const performanceResponse =
+                    await fetch(
+                        `http://localhost:5001/api/performance/${encodeURIComponent(email)}`
+                    );
+
+
+                const performanceData =
+                    await performanceResponse.json();
+
+
+                const performance =
+                    Array.isArray(performanceData)
+                        ? performanceData
+                        : performanceData.performance || [];
+
+
+                let average =
+                    0;
+
+
+                if (
+                    performance.length > 0
+                ) {
+
+                    let total =
+                        0;
+
+
+                    performance.forEach(
+                        function(record) {
+
+                            const marks =
+                                Number(
+                                    record.marks
+                                );
+
+
+                            const totalMarks =
+                                Number(
+                                    record.totalMarks
+                                );
+
+
+                            if (
+                                totalMarks > 0
+                            ) {
+
+                                total +=
+                                    (
+                                        marks /
+                                        totalMarks
+                                    ) * 100;
+
+                            }
+
+                        }
+                    );
+
+
+                    average =
+                        total /
+                        performance.length;
+
+                }
+
+
+                document.getElementById(
+                    "teacherPerformance"
+                ).textContent =
+                    `${average.toFixed(2)}%`;
+
+
+
+                /* =========================
+                   NEEDS ATTENTION
+                ========================== */
+
+                if (
+                    attendancePercentage < 75 ||
+                    average < 60
+                ) {
+
+                    document.getElementById(
+                        "studentsAttention"
+                    ).textContent =
+                        student.name;
+
+                }
+
+                else {
+
+                    document.getElementById(
+                        "studentsAttention"
+                    ).textContent =
+                        "None";
+
+                }
+
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Teacher overview error:",
+                    error
+                );
+
+
+                document.getElementById(
+                    "totalStudents"
+                ).textContent =
+                    "--";
+
+
+                document.getElementById(
+                    "teacherAttendance"
+                ).textContent =
+                    "--";
+
+
+                document.getElementById(
+                    "teacherPerformance"
+                ).textContent =
+                    "--";
+
+
+                document.getElementById(
+                    "studentsAttention"
+                ).textContent =
+                    "Unable to load";
+
+            }
+
+        }
+
+
+
+        /* =========================
+           START DASHBOARD
+        ========================== */
+
+        loadTeacherOverview();
+
+
+    </script>
+
+
+</body>
+
+</html>

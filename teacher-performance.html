@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Student Performance | EduTrack</title>
+
+    <meta name="description"
+          content="EduTrack teacher student performance management page">
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+
+    <!-- =========================
+         NAVIGATION
+    ========================== -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            EduTrack
+        </div>
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="teacher-dashboard.html">
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="teacher-students.html">
+                    Students
+                </a>
+            </li>
+
+            <li>
+                <a href="index.html">
+                    Home
+                </a>
+            </li>
+
+        </ul>
+
+        <div class="login-buttons">
+
+            <a href="#" onclick="logout()">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- =========================
+         PERFORMANCE PAGE
+    ========================== -->
+
+    <main class="performance-page">
+
+
+        <h1>
+            Student Performance 📈
+        </h1>
+
+
+        <p>
+            View academic performance of the selected student.
+        </p>
+
+
+
+        <!-- =========================
+             STUDENT INFORMATION
+        ========================== -->
+
+        <div
+            class="performance-summary"
+            id="studentInfo">
+
+            Loading student information...
+
+        </div>
+
+
+
+        <!-- =========================
+             PERFORMANCE SUMMARY
+        ========================== -->
+
+        <div
+            class="dashboard-cards"
+            style="margin-top:30px;">
+
+
+            <!-- AVERAGE -->
+
+            <div class="dashboard-card">
+
+                <h2 id="averagePerformance">
+                    --
+                </h2>
+
+                <h3>
+                    Average Performance
+                </h3>
+
+                <p>
+                    Overall academic score
+                </p>
+
+            </div>
+
+
+
+            <!-- BEST SUBJECT -->
+
+            <div class="dashboard-card">
+
+                <h2>
+                    🏆
+                </h2>
+
+                <h3>
+                    Best Subject
+                </h3>
+
+                <p id="bestSubject">
+                    Loading...
+                </p>
+
+            </div>
+
+
+
+            <!-- NEEDS IMPROVEMENT -->
+
+            <div class="dashboard-card">
+
+                <h2>
+                    📚
+                </h2>
+
+                <h3>
+                    Needs Improvement
+                </h3>
+
+                <p id="improvementSubject">
+                    Loading...
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             PERFORMANCE TABLE
+        ========================== -->
+
+        <div
+            style="margin-top:40px;">
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Subject
+                        </th>
+
+                        <th>
+                            Exam
+                        </th>
+
+                        <th>
+                            Marks
+                        </th>
+
+                        <th>
+                            Percentage
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="performanceTable">
+
+                    <tr>
+
+                        <td colspan="4">
+                            Loading...
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+
+        <!-- =========================
+             BACK BUTTON
+        ========================== -->
+
+        <div
+            style="margin-top:30px;">
+
+            <a
+                href="teacher-dashboard.html"
+                class="login-btn">
+
+                ← Back to Dashboard
+
+            </a>
+
+        </div>
+
+
+    </main>
+
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer>
+
+        <p>
+            © 2026 EduTrack |
+            AI Powered Student Performance
+            & Attendance Management System
+        </p>
+
+    </footer>
+
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script>
+
+
+        /* =========================
+           SELECTED STUDENT
+        ========================== */
+
+        const studentEmail =
+            localStorage.getItem(
+                "selectedStudentEmail"
+            );
+
+
+        if (!studentEmail) {
+
+            window.location.href =
+                "teacher-students.html";
+
+        }
+
+
+
+        /* =========================
+           LOAD STUDENT PROFILE
+        ========================== */
+
+        async function loadStudent() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        `http://localhost:5001/api/students/profile/${encodeURIComponent(studentEmail)}`
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    document.getElementById(
+                        "studentInfo"
+                    ).innerHTML =
+                        `<p>${data.message}</p>`;
+
+                    return;
+
+                }
+
+
+                const student =
+                    data.student;
+
+
+                document.getElementById(
+                    "studentInfo"
+                ).innerHTML = `
+
+                    <h2>
+                        ${student.name}
+                    </h2>
+
+                    <p>
+                        <b>Email:</b>
+                        ${student.email}
+                    </p>
+
+                    <p>
+                        <b>Course:</b>
+                        ${student.course}
+                    </p>
+
+                `;
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Student profile error:",
+                    error
+                );
+
+                document.getElementById(
+                    "studentInfo"
+                ).innerHTML =
+                    "<p>Unable to connect to the server.</p>";
+
+            }
+
+        }
+
+
+
+        /* =========================
+           LOAD PERFORMANCE
+        ========================== */
+
+        async function loadPerformance() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        `http://localhost:5001/api/performance/${encodeURIComponent(studentEmail)}`
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                console.log(
+                    "Performance API response:",
+                    data
+                );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        "Performance request failed"
+                    );
+
+                }
+
+
+                const performance =
+                    Array.isArray(data)
+                        ? data
+                        : data.performance || [];
+
+
+                const table =
+                    document.getElementById(
+                        "performanceTable"
+                    );
+
+
+                if (
+                    performance.length === 0
+                ) {
+
+                    table.innerHTML = `
+
+                        <tr>
+
+                            <td colspan="4">
+                                No performance records found.
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                    document.getElementById(
+                        "averagePerformance"
+                    ).textContent =
+                        "0%";
+
+                    document.getElementById(
+                        "bestSubject"
+                    ).textContent =
+                        "No data";
+
+                    document.getElementById(
+                        "improvementSubject"
+                    ).textContent =
+                        "No data";
+
+                    return;
+
+                }
+
+
+
+                /* =========================
+                   CALCULATE RESULTS
+                ========================== */
+
+                let totalPercentage =
+                    0;
+
+
+                let bestRecord =
+                    null;
+
+
+                let lowestRecord =
+                    null;
+
+
+                performance.forEach(
+                    function(record) {
+
+
+                        const marks =
+                            Number(
+                                record.marks
+                            );
+
+
+                        const totalMarks =
+                            Number(
+                                record.totalMarks
+                            );
+
+
+                        let percentage =
+                            0;
+
+
+                        if (
+                            totalMarks > 0
+                        ) {
+
+                            percentage =
+                                (
+                                    marks /
+                                    totalMarks
+                                ) * 100;
+
+                        }
+
+
+                        totalPercentage +=
+                            percentage;
+
+
+                        if (
+                            bestRecord === null ||
+                            percentage >
+                            bestRecord.percentage
+                        ) {
+
+                            bestRecord = {
+
+                                record:
+                                    record,
+
+                                percentage:
+                                    percentage
+
+                            };
+
+                        }
+
+
+                        if (
+                            lowestRecord === null ||
+                            percentage <
+                            lowestRecord.percentage
+                        ) {
+
+                            lowestRecord = {
+
+                                record:
+                                    record,
+
+                                percentage:
+                                    percentage
+
+                            };
+
+                        }
+
+
+                    }
+                );
+
+
+
+                /* =========================
+                   AVERAGE
+                ========================== */
+
+                const average =
+                    totalPercentage /
+                    performance.length;
+
+
+                document.getElementById(
+                    "averagePerformance"
+                ).textContent =
+                    `${average.toFixed(2)}%`;
+
+
+
+                /* =========================
+                   BEST SUBJECT
+                ========================== */
+
+                document.getElementById(
+                    "bestSubject"
+                ).textContent =
+                    `${bestRecord.record.subject} — ${bestRecord.percentage.toFixed(2)}%`;
+
+
+
+                /* =========================
+                   NEEDS IMPROVEMENT
+                ========================== */
+
+                document.getElementById(
+                    "improvementSubject"
+                ).textContent =
+                    `${lowestRecord.record.subject} — ${lowestRecord.percentage.toFixed(2)}%`;
+
+
+
+                /* =========================
+                   TABLE
+                ========================== */
+
+                table.innerHTML = "";
+
+
+                performance.forEach(
+                    function(record) {
+
+
+                        const marks =
+                            Number(
+                                record.marks
+                            );
+
+
+                        const totalMarks =
+                            Number(
+                                record.totalMarks
+                            );
+
+
+                        let percentage =
+                            0;
+
+
+                        if (
+                            totalMarks > 0
+                        ) {
+
+                            percentage =
+                                (
+                                    marks /
+                                    totalMarks
+                                ) * 100;
+
+                        }
+
+
+                        const row =
+                            document.createElement(
+                                "tr"
+                            );
+
+
+                        const subjectCell =
+                            document.createElement(
+                                "td"
+                            );
+
+
+                        const examCell =
+                            document.createElement(
+                                "td"
+                            );
+
+
+                        const marksCell =
+                            document.createElement(
+                                "td"
+                            );
+
+
+                        const percentageCell =
+                            document.createElement(
+                                "td"
+                            );
+
+
+                        subjectCell.textContent =
+                            record.subject ||
+                            "Unknown";
+
+
+                        examCell.textContent =
+                            record.exam ||
+                            "Internal 1";
+
+
+                        marksCell.textContent =
+                            `${marks}/${totalMarks}`;
+
+
+                        percentageCell.textContent =
+                            `${percentage.toFixed(2)}%`;
+
+
+                        row.appendChild(
+                            subjectCell
+                        );
+
+
+                        row.appendChild(
+                            examCell
+                        );
+
+
+                        row.appendChild(
+                            marksCell
+                        );
+
+
+                        row.appendChild(
+                            percentageCell
+                        );
+
+
+                        table.appendChild(
+                            row
+                        );
+
+
+                    }
+                );
+
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Performance error:",
+                    error
+                );
+
+
+                document.getElementById(
+                    "performanceTable"
+                ).innerHTML = `
+
+                    <tr>
+
+                        <td colspan="4">
+                            Unable to connect
+                            to the server.
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+
+        }
+
+
+
+        /* =========================
+           LOGOUT
+        ========================== */
+
+        function logout() {
+
+            localStorage.removeItem(
+                "teacherLoggedIn"
+            );
+
+            localStorage.removeItem(
+                "selectedStudentEmail"
+            );
+
+            window.location.href =
+                "teacher-login.html";
+
+        }
+
+
+
+        /* =========================
+           START
+        ========================== */
+
+        loadStudent();
+
+        loadPerformance();
+
+
+    </script>
+
+
+</body>
+
+</html>

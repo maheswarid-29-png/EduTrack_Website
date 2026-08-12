@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Student Profile | EduTrack</title>
+
+    <meta name="description"
+          content="EduTrack teacher student profile">
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            EduTrack
+        </div>
+
+        <div class="nav-links">
+
+            <a href="teacher-dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="teacher-students.html">
+                Students
+            </a>
+
+            <a href="index.html">
+                Home
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <main class="dashboard">
+
+    <h1>
+        Student Profile 👨‍🎓
+    </h1>
+
+    <p>
+        Complete academic overview of the selected student.
+    </p>
+
+
+    <!-- Student Information -->
+
+    <div
+        class="performance-summary"
+        id="studentProfile">
+
+        Loading student profile...
+
+    </div>
+
+
+    <!-- Academic Summary -->
+
+    <div
+        class="dashboard-cards"
+        style="margin-top:40px;">
+
+
+        <!-- Attendance -->
+
+        <div class="dashboard-card">
+
+            <h2 id="attendancePercentage">
+                --
+            </h2>
+
+            <h3>
+                Attendance
+            </h3>
+
+            <p id="attendanceDetails">
+                Loading...
+            </p>
+
+        </div>
+
+
+        <!-- Average Performance -->
+
+        <div class="dashboard-card">
+
+            <h2 id="averagePerformance">
+                --
+            </h2>
+
+            <h3>
+                Average Performance
+            </h3>
+
+            <p>
+                Overall academic score
+            </p>
+
+        </div>
+
+
+        <!-- Best Subject -->
+
+        <div class="dashboard-card">
+
+            <h2>🏆</h2>
+
+            <h3>
+                Best Subject
+            </h3>
+
+            <p id="bestSubject">
+                Loading...
+            </p>
+
+        </div>
+
+
+        <!-- Needs Improvement -->
+
+        <div class="dashboard-card">
+
+            <h2>📚</h2>
+
+            <h3>
+                Needs Improvement
+            </h3>
+
+            <p id="improvementSubject">
+                Loading...
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Detailed Pages -->
+
+    <div
+        class="dashboard-cards"
+        style="margin-top:40px;">
+
+
+        <div class="dashboard-card">
+
+            <h2>📊</h2>
+
+            <h3>
+                Attendance Details
+            </h3>
+
+            <p>
+                View individual attendance records.
+            </p>
+
+            <button
+                class="login-btn"
+                onclick="viewAttendance()">
+
+                View Attendance
+
+            </button>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+            <h2>📈</h2>
+
+            <h3>
+                Performance Details
+            </h3>
+
+            <p>
+                View marks and subject performance.
+            </p>
+
+            <button
+                class="login-btn"
+                onclick="viewPerformance()">
+
+                View Performance
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- Back Button -->
+
+    <div style="margin-top:30px;">
+
+        <a
+            href="teacher-students.html"
+            class="login-btn">
+
+            ← Back to Students
+
+        </a>
+
+    </div>
+
+</main>
+    <script>
+
+const studentEmail =
+    localStorage.getItem(
+        "selectedStudentEmail"
+    );
+
+
+if (!studentEmail) {
+
+    window.location.href =
+        "teacher-students.html";
+
+}
+
+
+/* =========================
+   LOAD STUDENT PROFILE
+========================= */
+
+async function loadStudentProfile() {
+
+    try {
+
+        const response =
+            await fetch(
+                `http://localhost:5001/api/students/profile/${encodeURIComponent(studentEmail)}`
+            );
+
+
+        const data =
+            await response.json();
+
+
+        const container =
+            document.getElementById(
+                "studentProfile"
+            );
+
+
+        if (!response.ok) {
+
+            container.innerHTML =
+                `<p>${data.message}</p>`;
+
+            return;
+
+        }
+
+
+        const student =
+            data.student;
+
+
+        container.innerHTML = `
+
+            <h2>
+                ${student.name}
+            </h2>
+
+            <p>
+                <b>Email:</b>
+                ${student.email}
+            </p>
+
+            <p>
+                <b>Course:</b>
+                ${student.course}
+            </p>
+
+        `;
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        document.getElementById(
+            "studentProfile"
+        ).innerHTML =
+            "<p>Unable to connect to the server.</p>";
+
+    }
+
+}
+
+
+/* =========================
+   LOAD ATTENDANCE
+========================= */
+
+async function loadAttendance() {
+
+    try {
+
+        const response =
+            await fetch(
+                `http://localhost:5001/api/attendance/${encodeURIComponent(studentEmail)}`
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            return;
+
+        }
+
+
+        const attendance =
+            Array.isArray(data)
+                ? data
+                : data.attendance || [];
+
+
+        if (!attendance.length) {
+
+            return;
+
+        }
+
+
+        const total =
+            attendance.length;
+
+
+        const present =
+            attendance.filter(
+                record =>
+                    record.status === "Present"
+            ).length;
+
+
+        const absent =
+            total - present;
+
+
+        const percentage =
+            (
+                present / total
+            ) * 100;
+
+
+        document.getElementById(
+            "attendancePercentage"
+        ).textContent =
+            `${percentage.toFixed(2)}%`;
+
+
+        document.getElementById(
+            "attendanceDetails"
+        ).textContent =
+            `${present} Present / ${absent} Absent`;
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+    }
+
+}
+
+
+/* =========================
+   LOAD PERFORMANCE
+========================= */
+
+async function loadPerformance() {
+
+    try {
+
+        const response =
+            await fetch(
+                `http://localhost:5001/api/performance/${encodeURIComponent(studentEmail)}`
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            return;
+
+        }
+
+
+        const performance =
+            Array.isArray(data)
+                ? data
+                : data.performance || [];
+
+
+        if (!performance.length) {
+
+            return;
+
+        }
+
+
+        let total =
+            0;
+
+
+        let best =
+            performance[0];
+
+
+        let lowest =
+            performance[0];
+
+
+        performance.forEach(
+            function(record) {
+
+                const percentage =
+                    (
+                        Number(record.marks) /
+                        Number(record.totalMarks)
+                    ) * 100;
+
+
+                total += percentage;
+
+
+                if (
+                    percentage >
+                    (
+                        Number(best.marks) /
+                        Number(best.totalMarks)
+                    ) * 100
+                ) {
+
+                    best = record;
+
+                }
+
+
+                if (
+                    percentage <
+                    (
+                        Number(lowest.marks) /
+                        Number(lowest.totalMarks)
+                    ) * 100
+                ) {
+
+                    lowest = record;
+
+                }
+
+            }
+        );
+
+
+        const average =
+            total /
+            performance.length;
+
+
+        const bestPercentage =
+            (
+                Number(best.marks) /
+                Number(best.totalMarks)
+            ) * 100;
+
+
+        const lowestPercentage =
+            (
+                Number(lowest.marks) /
+                Number(lowest.totalMarks)
+            ) * 100;
+
+
+        document.getElementById(
+            "averagePerformance"
+        ).textContent =
+            `${average.toFixed(2)}%`;
+
+
+        document.getElementById(
+            "bestSubject"
+        ).textContent =
+            `${best.subject} — ${bestPercentage.toFixed(2)}%`;
+
+
+        document.getElementById(
+            "improvementSubject"
+        ).textContent =
+            `${lowest.subject} — ${lowestPercentage.toFixed(2)}%`;
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+    }
+
+}
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+function viewAttendance() {
+
+    window.location.href =
+        "teacher-attendance.html";
+
+}
+
+
+function viewPerformance() {
+
+    window.location.href =
+        "teacher-performance.html";
+
+}
+
+
+/* =========================
+   LOAD EVERYTHING
+========================= */
+
+loadStudentProfile();
+
+loadAttendance();
+
+loadPerformance();
+
+</script>
+
+    
+</body>
+
+</html>

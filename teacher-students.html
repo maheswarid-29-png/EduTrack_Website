@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Students | EduTrack</title>
+
+    <meta name="description"
+          content="EduTrack teacher student management page">
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            EduTrack
+        </div>
+
+        <div class="nav-links">
+
+            <a href="teacher-dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="index.html">
+                Home
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <main class="dashboard">
+
+        <h1>
+            Registered Students 👨‍🎓
+        </h1>
+
+        <p>
+            View students registered in EduTrack.
+        </p>
+
+
+        <div id="studentsContainer"
+             class="dashboard-cards">
+
+            <p>
+                Loading students...
+            </p>
+
+        </div>
+
+
+        <div style="margin-top:30px;">
+
+            <a
+                href="teacher-dashboard.html"
+                class="login-btn">
+
+                ← Back to Dashboard
+
+            </a>
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        async function loadStudents() {
+
+            const container =
+                document.getElementById(
+                    "studentsContainer"
+                );
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "http://localhost:5001/api/students"
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    container.innerHTML =
+                        "<p>Unable to load students.</p>";
+
+                    return;
+
+                }
+
+
+                /*
+                   Your API may return either:
+                   an array directly OR
+                   an object containing students.
+                */
+
+                const students =
+                    Array.isArray(data)
+                        ? data
+                        : data.students || [];
+
+
+                if (students.length === 0) {
+
+                    container.innerHTML =
+                        "<p>No students found.</p>";
+
+                    return;
+
+                }
+
+
+                container.innerHTML = "";
+
+
+                students.forEach(
+                    function(student) {
+
+                        const card =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        card.className =
+                            "dashboard-card";
+
+                        card.innerHTML = `
+
+    <h2>👨‍🎓</h2>
+
+    <h3>
+        ${student.name || "Student"}
+    </h3>
+
+    <p>
+        Course:
+        ${student.course || "Not available"}
+    </p>
+
+    <p>
+        Email:
+        ${student.email || "Not available"}
+    </p>
+
+    <p>
+        Status:
+        ${student.status || "Active"}
+    </p>
+
+    <button
+        class="login-btn"
+        onclick="selectStudent('${student.email}')">
+
+        View Student
+
+    </button>
+
+`;
+                        
+
+                        
+
+
+                        container.appendChild(
+                            card
+                        );
+
+                    }
+                );
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                container.innerHTML =
+                    "<p>Unable to connect to the server.</p>";
+
+            }
+
+        }
+        function selectStudent(email) {
+
+    localStorage.setItem(
+        "selectedStudentEmail",
+        email
+    );
+
+    window.location.href =
+        "teacher-student-profile.html";
+
+}
+
+        loadStudents();
+
+    </script>
+
+</body>
+
+</html>

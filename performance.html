@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Performance | EduTrack</title>
+
+    <meta name="description"
+        content="EduTrack student academic performance tracking page">
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <!-- ================================
+         NAVIGATION
+    ================================= -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            EduTrack
+        </div>
+
+        <div class="nav-links">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="attendance.html">
+                Attendance
+            </a>
+
+            <a href="performance.html">
+                Performance
+            </a>
+
+            <a href="chatbot.html">
+                AI Chatbot
+            </a>
+
+            <button id="logoutBtn">
+                Logout
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- ================================
+         PERFORMANCE PAGE
+    ================================= -->
+
+    <main class="performance-page">
+
+        <h1>
+            Academic Performance
+        </h1>
+
+        <p>
+            Track your marks and academic progress.
+        </p>
+
+
+        <!-- ================================
+             PERFORMANCE SUMMARY
+        ================================= -->
+
+        <div class="dashboard-cards">
+
+            <div class="dashboard-card">
+
+                <h3>
+                    Average
+                </h3>
+
+                <h2>
+                    <span id="averagePercentage">
+                        0
+                    </span>%
+                </h2>
+
+                <p>
+                    Overall Performance
+                </p>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <h3>
+                    Subjects
+                </h3>
+
+                <h2 id="subjectCount">
+                    0
+                </h2>
+
+                <p>
+                    Subjects Recorded
+                </p>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <h3>
+                    Highest
+                </h3>
+
+                <h2>
+                    <span id="highestPercentage">
+                        0
+                    </span>%
+                </h2>
+
+                <p>
+                    Best Performance
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================
+             PERFORMANCE RECORDS
+        ================================= -->
+
+        <h2 style="margin-top: 50px; margin-bottom: 20px; color: #064E3B;">
+            Subject-wise Performance
+        </h2>
+
+
+        <div id="performanceContainer">
+
+            <p>
+                Loading performance data...
+            </p>
+
+        </div>
+
+    </main>
+
+
+    <!-- ================================
+         JAVASCRIPT
+    ================================= -->
+
+    <script>
+
+        // Get logged-in student's email
+        const studentEmail =
+            localStorage.getItem("studentEmail");
+
+
+        // If student is not logged in
+        if (!studentEmail) {
+
+            window.location.href =
+                "student-login.html";
+
+        }
+
+
+        // ================================
+        // LOAD PERFORMANCE
+        // ================================
+
+        async function loadPerformance() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        `http://localhost:5001/api/performance/${encodeURIComponent(studentEmail)}`
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        "Unable to fetch performance"
+                    );
+
+                }
+
+
+                // ================================
+                // GET RECORDS
+                // ================================
+
+                const records =
+                    data.performance || [];
+
+
+                // ================================
+                // CALCULATE PERCENTAGES
+                // ================================
+
+                const percentages =
+                    records.map(record => {
+
+                        return (
+                            record.marks /
+                            record.totalMarks
+                        ) * 100;
+
+                    });
+
+
+                // ================================
+                // AVERAGE
+                // ================================
+
+                const average =
+                    percentages.length > 0
+                        ? percentages.reduce(
+                            (sum, value) =>
+                                sum + value,
+                            0
+                        ) / percentages.length
+                        : 0;
+
+
+                // ================================
+                // HIGHEST
+                // ================================
+
+                const highest =
+                    percentages.length > 0
+                        ? Math.max(...percentages)
+                        : 0;
+
+
+                // ================================
+                // DISPLAY SUMMARY
+                // ================================
+
+                document.getElementById(
+                    "averagePercentage"
+                ).textContent =
+                    average.toFixed(2);
+
+
+                document.getElementById(
+                    "subjectCount"
+                ).textContent =
+                    records.length;
+
+
+                document.getElementById(
+                    "highestPercentage"
+                ).textContent =
+                    highest.toFixed(2);
+
+
+                // ================================
+                // DISPLAY RECORDS
+                // ================================
+
+                const container =
+                    document.getElementById(
+                        "performanceContainer"
+                    );
+
+
+                container.innerHTML = "";
+
+
+                if (records.length === 0) {
+
+                    container.innerHTML =
+                        "<p>No performance records found.</p>";
+
+                    return;
+
+                }
+
+
+                records.forEach(record => {
+
+                    const percentage =
+                        (
+                            record.marks /
+                            record.totalMarks
+                        ) * 100;
+
+
+                    const card =
+                        document.createElement("div");
+
+
+                    card.className =
+                        "performance-item";
+
+
+                    card.innerHTML = `
+
+                        <h3>
+                            ${record.subject}
+                        </h3>
+
+                        <p>
+                            ${record.exam}
+                        </p>
+
+                        <p>
+                            Marks:
+                            <strong>
+                                ${record.marks}/${record.totalMarks}
+                            </strong>
+                        </p>
+
+                        <p>
+                            Percentage:
+                            <strong>
+                                ${percentage.toFixed(2)}%
+                            </strong>
+                        </p>
+
+                    `;
+
+
+                    container.appendChild(card);
+
+                });
+
+
+            } catch (error) {
+
+                console.error(
+                    "Performance error:",
+                    error
+                );
+
+
+                document.getElementById(
+                    "performanceContainer"
+                ).innerHTML =
+                    `
+                    <p class="error-message">
+                        Unable to load performance data.
+                    </p>
+                    `;
+
+            }
+
+        }
+
+
+        // ================================
+        // LOGOUT
+        // ================================
+
+        document.getElementById(
+            "logoutBtn"
+        ).addEventListener(
+            "click",
+            function () {
+
+                localStorage.removeItem(
+                    "studentEmail"
+                );
+
+                window.location.href =
+                    "student-login.html";
+
+            }
+        );
+
+
+        // Load performance
+        loadPerformance();
+
+    </script>
+
+</body>
+
+</html>

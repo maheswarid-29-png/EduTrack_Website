@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | EduTrack</title>
+
+    <meta name="description"
+        content="EduTrack student performance and attendance dashboard">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ================================
+         NAVBAR
+    ================================= -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            EduTrack
+        </div>
+
+        <div class="nav-links">
+
+            <a href="dashboard.html">Dashboard</a>
+
+            <a href="attendance.html">Attendance</a>
+
+            <a href="performance.html">Performance</a>
+
+            <a href="chatbot.html">AI Chatbot</a>
+
+            <button id="logoutBtn">
+                Logout
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- ================================
+         DASHBOARD
+    ================================= -->
+
+    <main class="dashboard-container">
+
+        <section class="welcome-section">
+
+            <h1>
+                Welcome, <span id="studentName">Student</span> 👋
+            </h1>
+
+            <p>
+                Here's your academic progress overview.
+            </p>
+
+        </section>
+
+
+        <!-- ================================
+             STUDENT INFORMATION
+        ================================= -->
+
+        <section class="student-card">
+
+            <h2>Student Profile</h2>
+
+            <p>
+                <strong>Name:</strong>
+                <span id="profileName">Loading...</span>
+            </p>
+
+            <p>
+                <strong>Email:</strong>
+                <span id="profileEmail">Loading...</span>
+            </p>
+
+            <p>
+                <strong>Course:</strong>
+                <span id="profileCourse">Loading...</span>
+            </p>
+
+        </section>
+
+
+        <!-- ================================
+             SUMMARY CARDS
+        ================================= -->
+
+        <section class="summary-grid">
+
+            <div class="summary-card">
+
+                <h3>Attendance</h3>
+
+                <div class="summary-number">
+                    <span id="attendancePercentage">0</span>%
+                </div>
+
+                <p>
+                    <span id="presentClasses">0</span>
+                    Present /
+                    <span id="totalClasses">0</span>
+                    Classes
+                </p>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <h3>Performance</h3>
+
+                <div class="summary-number">
+                    <span id="performancePercentage">0</span>%
+                </div>
+
+                <p>
+                    Average Performance
+                </p>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <h3>Subjects</h3>
+
+                <div class="summary-number">
+                    <span id="subjectCount">0</span>
+                </div>
+
+                <p>
+                    Subjects Recorded
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================
+             PERFORMANCE
+        ================================= -->
+
+        <section class="dashboard-section">
+
+            <h2>Performance</h2>
+
+            <div id="performanceContainer">
+
+                <p>Loading performance data...</p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================
+             ATTENDANCE
+        ================================= -->
+
+        <section class="dashboard-section">
+
+            <h2>Attendance</h2>
+
+            <div id="attendanceContainer">
+
+                <p>Loading attendance data...</p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================
+             POWER BI
+        ================================= -->
+
+        <section class="dashboard-section">
+
+            <h2>Power BI Analytics</h2>
+
+            <p>
+                View detailed student performance and attendance analytics.
+            </p>
+
+            <a href="https://app.powerbi.com/links/7CZy4fdLJb?ctid=dd2561fb-5505-4dec-ab04-5fabba24a3df&pbi_source=linkShare"
+                target="_blank"
+                rel="noopener noreferrer">
+                 View Power BI Dashboard
+             </a>
+
+        </section>
+
+
+        <!-- ================================
+             AI CHATBOT
+        ================================= -->
+
+        <section class="dashboard-section">
+
+            <h2>AI Student Assistant</h2>
+
+            <p>
+                Ask questions about your attendance, marks and academic progress.
+            </p>
+
+            <a href="chatbot.html" class="dashboard-button">
+                Open AI Chatbot
+            </a>
+
+        </section>
+
+    </main>
+
+
+    <!-- ================================
+         JAVASCRIPT
+    ================================= -->
+
+    <script>
+
+        // Get logged-in student's email
+        const studentEmail = localStorage.getItem("studentEmail");
+
+
+        // If no student is logged in
+        if (!studentEmail) {
+
+            window.location.href = "student-login.html";
+
+        }
+
+
+        // ================================
+        // FETCH DASHBOARD DATA
+        // ================================
+
+        async function loadDashboard() {
+
+            try {
+
+                const response = await fetch(
+                    `http://localhost:5001/api/dashboard/${encodeURIComponent(studentEmail)}`
+                );
+
+
+                const data = await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message || "Unable to load dashboard"
+                    );
+
+                }
+
+
+                // ================================
+                // STUDENT INFORMATION
+                // ================================
+
+                document.getElementById("studentName").textContent =
+                    data.student.name;
+
+                document.getElementById("profileName").textContent =
+                    data.student.name;
+
+                document.getElementById("profileEmail").textContent =
+                    data.student.email;
+
+                document.getElementById("profileCourse").textContent =
+                    data.student.course;
+
+
+                // ================================
+                // ATTENDANCE
+                // ================================
+
+                document.getElementById("attendancePercentage").textContent =
+                    data.attendance.percentage;
+
+                document.getElementById("presentClasses").textContent =
+                    data.attendance.presentClasses;
+
+                document.getElementById("totalClasses").textContent =
+                    data.attendance.totalClasses;
+
+
+                // ================================
+                // PERFORMANCE
+                // ================================
+
+                document.getElementById("performancePercentage").textContent =
+                    data.performance.averagePercentage;
+
+
+                // ================================
+                // PERFORMANCE RECORDS
+                // ================================
+
+                const performanceContainer =
+                    document.getElementById("performanceContainer");
+
+                performanceContainer.innerHTML = "";
+
+
+                const performanceRecords =
+                    data.performance.records;
+
+
+                document.getElementById("subjectCount").textContent =
+                    performanceRecords.length;
+
+
+                if (performanceRecords.length === 0) {
+
+                    performanceContainer.innerHTML =
+                        "<p>No performance records found.</p>";
+
+                } else {
+
+                    performanceRecords.forEach(record => {
+
+                        const percentage =
+                            (record.marks / record.totalMarks) * 100;
+
+
+                        const card =
+                            document.createElement("div");
+
+                        card.className = "performance-item";
+
+
+                        card.innerHTML = `
+                            <h3>${record.subject}</h3>
+
+                            <p>
+                                ${record.exam}
+                            </p>
+
+                            <p>
+                                Marks:
+                                <strong>
+                                    ${record.marks}/${record.totalMarks}
+                                </strong>
+                            </p>
+
+                            <p>
+                                Percentage:
+                                <strong>
+                                    ${percentage.toFixed(2)}%
+                                </strong>
+                            </p>
+                        `;
+
+
+                        performanceContainer.appendChild(card);
+
+                    });
+
+                }
+
+
+                // ================================
+                // ATTENDANCE RECORDS
+                // ================================
+
+                const attendanceContainer =
+                    document.getElementById("attendanceContainer");
+
+                attendanceContainer.innerHTML = "";
+
+
+                // The dashboard API returns attendance
+                // records separately only if included.
+                // We fetch them here.
+
+                const attendanceResponse =
+                    await fetch(
+                        `http://localhost:5001/api/attendance/${encodeURIComponent(studentEmail)}`
+                    );
+
+
+                const attendanceData =
+                    await attendanceResponse.json();
+
+
+                if (
+                    attendanceResponse.ok &&
+                    attendanceData.attendance &&
+                    attendanceData.attendance.length > 0
+                ) {
+
+                    attendanceData.attendance.forEach(record => {
+
+                        const item =
+                            document.createElement("div");
+
+                        item.className = "attendance-item";
+
+
+                        item.innerHTML = `
+                            <p>
+                                <strong>Date:</strong>
+                                ${record.date}
+                            </p>
+
+                            <p>
+                                <strong>Status:</strong>
+                                ${record.status}
+                            </p>
+                        `;
+
+
+                        attendanceContainer.appendChild(item);
+
+                    });
+
+                } else {
+
+                    attendanceContainer.innerHTML =
+                        "<p>No attendance records found.</p>";
+
+                }
+
+
+            } catch (error) {
+
+                console.error(
+                    "Dashboard error:",
+                    error
+                );
+
+
+                document.querySelector(
+                    ".dashboard-container"
+                ).insertAdjacentHTML(
+                    "afterbegin",
+                    `
+                    <div class="error-message">
+                        Unable to load dashboard data.
+                        Please make sure the backend server is running.
+                    </div>
+                    `
+                );
+
+            }
+
+        }
+
+
+        // ================================
+        // LOGOUT
+        // ================================
+
+        document.getElementById("logoutBtn")
+            .addEventListener("click", function () {
+
+                localStorage.removeItem("studentEmail");
+
+                window.location.href =
+                    "student-login.html";
+
+            });
+
+
+        // Load dashboard
+        loadDashboard();
+
+    </script>
+
+</body>
+
+</html>

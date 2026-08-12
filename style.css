@@ -1,0 +1,851 @@
+/* ===== Global Styles ===== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", Arial, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #FFFBEB, #F0FDFA);
+    color: #334155;
+    line-height: 1.6;
+}
+
+
+/* ===== Navigation Bar ===== */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 8%;
+    background-color: #064E3B;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    color: #CA8A04;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 25px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: #34D399;
+}
+
+
+/* ===== Login Buttons ===== */
+
+.login-buttons a {
+    text-decoration: none;
+    background-color: #059669;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 25px;
+    margin-left: 10px;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.login-buttons a:hover {
+    background-color: #047857;
+}
+
+
+/* ===== Hero Section ===== */
+
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 70px 8%;
+    gap: 40px;
+}
+
+
+.hero-content {
+    width: 55%;
+}
+
+
+.hero-content h1 {
+    font-size: 45px;
+    color: #064E3B;
+    margin-bottom: 20px;
+}
+
+
+.hero-content h1 span {
+    color: #CA8A04;
+}
+
+
+.hero-content p {
+    font-size: 18px;
+    color: #475569;
+    margin-bottom: 30px;
+}
+
+
+.hero-buttons a {
+    display: inline-block;
+    text-decoration: none;
+    padding: 14px 25px;
+    border-radius: 30px;
+    margin-right: 15px;
+    background-color: #064E3B;
+    color: white;
+    transition: 0.3s;
+}
+
+
+.hero-buttons a:hover {
+    background-color: #065F46;
+}
+
+
+/* ===== Hero Image ===== */
+
+.hero-image img {
+    width: 100%;
+    max-width: 500px;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(6,78,59,0.18);
+}
+
+
+/* ===== About Section ===== */
+
+.about-preview {
+    text-align: center;
+    padding: 60px 10%;
+    background-color: white;
+}
+
+
+.about-preview h2 {
+    color: #064E3B;
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+
+.about-preview p {
+    color: #475569;
+    font-size: 17px;
+}
+/* ===== Features Section ===== */
+
+.features {
+    padding: 60px 8%;
+    text-align: center;
+}
+
+
+.features h2 {
+    font-size: 32px;
+    color: #064E3B;
+    margin-bottom: 40px;
+}
+
+
+.feature-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 25px;
+}
+
+
+.card {
+    background: #FFFFFF;
+    width: 280px;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(6,78,59,0.15);
+    transition: 0.3s;
+}
+
+
+.card:hover {
+    transform: translateY(-8px);
+}
+
+
+.card h3 {
+    color: #059669;
+    margin-bottom: 15px;
+}
+
+
+.card p {
+    color: #64748B;
+}
+
+
+/* ===== Footer ===== */
+
+footer {
+    background-color: #064E3B;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+
+/* ===== Login Page ===== */
+
+.login-section {
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 20px;
+}
+
+
+.login-box {
+    background: #FFFFFF;
+    width: 400px;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(6,78,59,0.15);
+    text-align: center;
+}
+
+
+.login-box h1 {
+    color: #064E3B;
+    margin-bottom: 15px;
+}
+
+
+.login-box p {
+    color: #64748B;
+    margin-bottom: 25px;
+}
+
+
+.login-box form {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+
+.login-box label {
+    margin-bottom: 8px;
+    color: #334155;
+    font-weight: 600;
+}
+
+
+.login-box input {
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #CBD5E1;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+
+.login-box input:focus {
+    outline: none;
+    border-color: #059669;
+}
+
+
+.login-box button {
+    background-color: #059669;
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+
+.login-box button:hover {
+    background-color: #047857;
+}
+
+
+/* ===== Dashboard ===== */
+
+.dashboard {
+    padding: 60px 8%;
+    text-align: center;
+}
+
+
+.dashboard h1 {
+    font-size: 36px;
+    color: #064E3B;
+    margin-bottom: 15px;
+}
+
+
+.dashboard > p {
+    color: #64748B;
+    margin-bottom: 40px;
+}
+
+
+.dashboard-cards {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 25px;
+}
+
+
+.dashboard-card {
+    background: #FFFFFF;
+    width: 250px;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(6,78,59,0.15);
+}
+
+
+.dashboard-card h2 {
+    font-size: 38px;
+    color: #CA8A04;
+}
+
+
+.dashboard-card p {
+    color: #475569;
+}
+/* ===== Attendance Page ===== */
+
+.attendance-page {
+    padding: 60px 8%;
+    text-align: center;
+}
+
+.attendance-page h1 {
+    font-size: 36px;
+    color: #064E3B;
+    margin-bottom: 15px;
+}
+
+.attendance-page p {
+    color: #64748B;
+    margin-bottom: 40px;
+}
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(6,78,59,0.15);
+}
+
+
+th {
+    background-color: #064E3B;
+    color: white;
+    padding: 15px;
+}
+
+
+td {
+    padding: 15px;
+    border-bottom: 1px solid #E2E8F0;
+    color: #475569;
+}
+
+
+.present {
+    background-color: #059669;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 20px;
+}
+
+
+.absent {
+    background-color: #DC2626;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 20px;
+}
+
+
+/* ===== Performance Page ===== */
+
+.performance-page {
+    padding: 60px 8%;
+    text-align: center;
+}
+
+
+.performance-page h1 {
+    color: #064E3B;
+    font-size: 36px;
+}
+
+
+.performance-summary {
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(6,78,59,0.15);
+}
+
+
+.performance-summary h2 {
+    color: #059669;
+}
+
+
+.performance-summary p {
+    color: #475569;
+}
+
+
+.performance-summary b {
+    color: #CA8A04;
+}
+
+
+/* ===== AI Chatbot Page ===== */
+
+.chatbot-page {
+    padding: 60px 8%;
+    text-align: center;
+}
+
+
+.chatbot-page h1 {
+    color: #064E3B;
+}
+
+
+.chat-box {
+    width: 600px;
+    max-width: 100%;
+    margin: auto;
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(6,78,59,0.15);
+}
+
+
+.bot {
+    background-color: #D1FAE5;
+    color: #064E3B;
+}
+
+
+.user {
+    background-color: #059669;
+    color: white;
+}
+
+
+.chat-input button {
+    background-color: #CA8A04;
+    color: white;
+    border: none;
+    padding: 14px 25px;
+    border-radius: 25px;
+}
+
+
+.chat-input button:hover {
+    background-color: #A16207;
+}
+
+
+/* ===== Contact Page ===== */
+
+.contact-page {
+    padding: 60px 8%;
+    text-align: center;
+}
+
+
+.contact-page h1 {
+    color: #064E3B;
+}
+
+
+.contact-info,
+.contact-form {
+    background: white;
+    padding: 35px;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(6,78,59,0.15);
+}
+
+
+.contact-info h2 {
+    color: #059669;
+}
+
+
+.contact-form button {
+    background-color: #059669;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 25px;
+}
+
+
+.contact-form button:hover {
+    background-color: #047857;
+}
+
+
+/* ===== Login Button Link ===== */
+
+.login-btn {
+    display: inline-block;
+    background-color: #059669;
+    color: white;
+    padding: 14px 25px;
+    border-radius: 25px;
+    text-decoration: none;
+}
+
+
+.login-btn:hover {
+    background-color: #047857;
+}
+
+
+/* ===== Responsive Design ===== */
+
+@media(max-width:900px){
+
+    .hero {
+        flex-direction: column;
+        text-align: center;
+    }
+
+
+    .hero-content {
+        width: 100%;
+    }
+
+
+    .hero-image img {
+        width: 300px;
+    }
+
+
+    .navbar {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+
+    .nav-links {
+        flex-direction: column;
+        text-align: center;
+    }
+
+
+    .contact-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+}
+/* ========================================
+   NEW EDUTRACK DASHBOARD
+======================================== */
+
+.dashboard-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 50px 0;
+}
+
+.welcome-section {
+    margin-bottom: 30px;
+}
+
+.welcome-section h1 {
+    font-size: 36px;
+    color: #064E3B;
+    margin-bottom: 8px;
+}
+
+.welcome-section p {
+    color: #64748B;
+    font-size: 17px;
+}
+
+
+/* ========================================
+   STUDENT PROFILE
+======================================== */
+
+.student-card {
+    background: #FFFFFF;
+    padding: 25px 30px;
+    border-radius: 18px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 25px rgba(6, 78, 59, 0.12);
+}
+
+.student-card h2 {
+    color: #064E3B;
+    margin-bottom: 15px;
+}
+
+.student-card p {
+    color: #475569;
+    margin: 8px 0;
+}
+
+.student-card strong {
+    color: #064E3B;
+}
+
+
+/* ========================================
+   SUMMARY CARDS
+======================================== */
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    margin-bottom: 35px;
+}
+
+.summary-card {
+    background: #FFFFFF;
+    padding: 30px;
+    border-radius: 18px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(6, 78, 59, 0.12);
+    transition: 0.3s;
+}
+
+.summary-card:hover {
+    transform: translateY(-5px);
+}
+
+.summary-card h3 {
+    color: #064E3B;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.summary-number {
+    font-size: 42px;
+    font-weight: bold;
+    color: #CA8A04;
+}
+
+.summary-card p {
+    color: #64748B;
+}
+
+
+/* ========================================
+   DASHBOARD SECTIONS
+======================================== */
+
+.dashboard-section {
+    background: #FFFFFF;
+    padding: 30px;
+    border-radius: 18px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 25px rgba(6, 78, 59, 0.12);
+}
+
+.dashboard-section h2 {
+    color: #064E3B;
+    font-size: 27px;
+    margin-bottom: 20px;
+}
+
+
+/* ========================================
+   PERFORMANCE ITEMS
+======================================== */
+
+#performanceContainer {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.performance-item {
+    background: #F0FDFA;
+    padding: 22px;
+    border-radius: 15px;
+    border-left: 5px solid #059669;
+}
+
+.performance-item h3 {
+    color: #064E3B;
+    margin-bottom: 8px;
+}
+
+.performance-item p {
+    color: #64748B;
+    margin: 6px 0;
+}
+
+.performance-item strong {
+    color: #CA8A04;
+}
+
+
+/* ========================================
+   ATTENDANCE ITEMS
+======================================== */
+
+#attendanceContainer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.attendance-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #F0FDFA;
+    padding: 15px 20px;
+    border-radius: 12px;
+    border-left: 5px solid #059669;
+}
+
+.attendance-item p {
+    margin: 0;
+    color: #475569;
+}
+
+
+/* ========================================
+   DASHBOARD BUTTONS
+======================================== */
+
+.dashboard-button {
+    display: inline-block;
+    background-color: #059669;
+    color: white;
+    text-decoration: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.dashboard-button:hover {
+    background-color: #047857;
+    transform: translateY(-2px);
+}
+
+
+/* ========================================
+   LOGOUT BUTTON
+======================================== */
+
+#logoutBtn {
+    background-color: #CA8A04;
+    color: white;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#logoutBtn:hover {
+    background-color: #A16207;
+}
+
+
+/* ========================================
+   ERROR MESSAGE
+======================================== */
+
+.error-message {
+    background-color: #FEE2E2;
+    color: #991B1B;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+
+/* ========================================
+   DASHBOARD RESPONSIVE DESIGN
+======================================== */
+
+@media (max-width: 900px) {
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #performanceContainer {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    #attendanceContainer {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .dashboard-container {
+        width: 92%;
+        padding: 30px 0;
+    }
+
+    .welcome-section h1 {
+        font-size: 28px;
+    }
+
+    .dashboard-section {
+        padding: 20px;
+    }
+
+    #performanceContainer {
+        grid-template-columns: 1fr;
+    }
+
+    .attendance-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+}

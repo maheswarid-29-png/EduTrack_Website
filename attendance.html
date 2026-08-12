@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Attendance | EduTrack</title>
+
+    <meta name="description"
+        content="EduTrack student attendance management page">
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <!-- ================================
+         NAVIGATION
+    ================================= -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            EduTrack
+        </div>
+
+        <div class="nav-links">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="attendance.html">
+                Attendance
+            </a>
+
+            <a href="performance.html">
+                Performance
+            </a>
+
+            <a href="chatbot.html">
+                AI Chatbot
+            </a>
+
+            <button id="logoutBtn">
+                Logout
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- ================================
+         ATTENDANCE PAGE
+    ================================= -->
+
+    <main class="attendance-page">
+
+        <h1>
+            Attendance
+        </h1>
+
+        <p>
+            Track your class attendance and attendance history.
+        </p>
+
+
+        <!-- ================================
+             ATTENDANCE SUMMARY
+        ================================= -->
+
+        <div class="dashboard-cards">
+
+            <div class="dashboard-card">
+
+                <h3>
+                    Attendance
+                </h3>
+
+                <h2>
+                    <span id="attendancePercentage">
+                        0
+                    </span>%
+                </h2>
+
+                <p>
+                    Overall Attendance
+                </p>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <h3>
+                    Present
+                </h3>
+
+                <h2 id="presentClasses">
+                    0
+                </h2>
+
+                <p>
+                    Classes Attended
+                </p>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <h3>
+                    Absent
+                </h3>
+
+                <h2 id="absentClasses">
+                    0
+                </h2>
+
+                <p>
+                    Classes Missed
+                </p>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <h3>
+                    Total
+                </h3>
+
+                <h2 id="totalClasses">
+                    0
+                </h2>
+
+                <p>
+                    Total Classes
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================
+             ATTENDANCE HISTORY
+        ================================= -->
+
+        <h2 style="margin-top: 50px; margin-bottom: 20px; color: #064E3B;">
+            Attendance History
+        </h2>
+
+
+        <div id="attendanceMessage">
+            Loading attendance...
+        </div>
+
+
+        <table id="attendanceTable">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Date
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="attendanceTableBody">
+
+            </tbody>
+
+        </table>
+
+    </main>
+
+
+    <!-- ================================
+         JAVASCRIPT
+    ================================= -->
+
+    <script>
+
+        // Get logged-in student's email
+        const studentEmail =
+            localStorage.getItem("studentEmail");
+
+
+        // If student is not logged in
+        if (!studentEmail) {
+
+            window.location.href =
+                "student-login.html";
+
+        }
+
+
+        // ================================
+        // LOAD ATTENDANCE
+        // ================================
+
+        async function loadAttendance() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        `http://localhost:5001/api/attendance/${encodeURIComponent(studentEmail)}`
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        "Unable to fetch attendance"
+                    );
+
+                }
+
+
+                // ================================
+                // ATTENDANCE RECORDS
+                // ================================
+
+                const records =
+                    data.attendance || [];
+
+
+                // ================================
+                // CALCULATE SUMMARY
+                // ================================
+
+                const totalClasses =
+                    records.length;
+
+
+                const presentClasses =
+                    records.filter(
+                        record =>
+                            record.status === "Present"
+                    ).length;
+
+
+                const absentClasses =
+                    records.filter(
+                        record =>
+                            record.status === "Absent"
+                    ).length;
+
+
+                const percentage =
+                    totalClasses > 0
+                        ? (presentClasses / totalClasses) * 100
+                        : 0;
+
+
+                // ================================
+                // DISPLAY SUMMARY
+                // ================================
+
+                document.getElementById(
+                    "attendancePercentage"
+                ).textContent =
+                    percentage.toFixed(2);
+
+
+                document.getElementById(
+                    "presentClasses"
+                ).textContent =
+                    presentClasses;
+
+
+                document.getElementById(
+                    "absentClasses"
+                ).textContent =
+                    absentClasses;
+
+
+                document.getElementById(
+                    "totalClasses"
+                ).textContent =
+                    totalClasses;
+
+
+                // ================================
+                // DISPLAY TABLE
+                // ================================
+
+                const tableBody =
+                    document.getElementById(
+                        "attendanceTableBody"
+                    );
+
+
+                tableBody.innerHTML = "";
+
+
+                if (records.length === 0) {
+
+                    document.getElementById(
+                        "attendanceMessage"
+                    ).textContent =
+                        "No attendance records found.";
+
+                    return;
+
+                }
+
+
+                document.getElementById(
+                    "attendanceMessage"
+                ).textContent = "";
+
+
+                records.forEach(record => {
+
+                    const row =
+                        document.createElement("tr");
+
+
+                    // Convert MongoDB date into readable date
+                    const date =
+                        new Date(record.date);
+
+
+                    const formattedDate =
+                        date.toLocaleDateString(
+                            "en-IN",
+                            {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric"
+                            }
+                        );
+
+
+                    const statusClass =
+                        record.status === "Present"
+                            ? "present"
+                            : "absent";
+
+
+                    row.innerHTML = `
+
+                        <td>
+                            ${formattedDate}
+                        </td>
+
+                        <td>
+
+                            <span class="${statusClass}">
+                                ${record.status}
+                            </span>
+
+                        </td>
+
+                    `;
+
+
+                    tableBody.appendChild(row);
+
+                });
+
+
+            } catch (error) {
+
+                console.error(
+                    "Attendance error:",
+                    error
+                );
+
+
+                document.getElementById(
+                    "attendanceMessage"
+                ).textContent =
+                    "Unable to load attendance data.";
+
+            }
+
+        }
+
+
+        // ================================
+        // LOGOUT
+        // ================================
+
+        document.getElementById(
+            "logoutBtn"
+        ).addEventListener(
+            "click",
+            function () {
+
+                localStorage.removeItem(
+                    "studentEmail"
+                );
+
+                window.location.href =
+                    "student-login.html";
+
+            }
+        );
+
+
+        // Load attendance
+        loadAttendance();
+
+    </script>
+
+</body>
+
+</html>

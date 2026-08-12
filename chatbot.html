@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Chatbot | EduTrack</title>
+
+    <meta name="description"
+        content="EduTrack AI chatbot for student assistance">
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <!-- ================================
+         NAVIGATION
+    ================================= -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            EduTrack
+        </div>
+
+        <div class="nav-links">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="attendance.html">
+                Attendance
+            </a>
+
+            <a href="performance.html">
+                Performance
+            </a>
+
+            <a href="chatbot.html">
+                AI Chatbot
+            </a>
+
+            <button id="logoutBtn">
+                Logout
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- ================================
+         CHATBOT PAGE
+    ================================= -->
+
+    <main class="chatbot-page">
+
+        <h1>
+            AI Student Assistant 🤖
+        </h1>
+
+        <p>
+            Ask questions about your attendance, marks and academic progress.
+        </p>
+
+
+        <!-- ================================
+             CHAT BOX
+        ================================= -->
+
+        <div class="chat-box">
+
+            <div id="chatMessages">
+
+                <div class="bot chat-message">
+
+                    <strong>
+                        EduTrack AI:
+                    </strong>
+
+                    <p>
+                        Hello! 👋 I am your EduTrack Student Assistant.
+                        You can ask me about your attendance, marks,
+                        subjects and academic performance.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================
+                 QUICK QUESTIONS
+            ================================= -->
+
+            <div class="quick-questions">
+
+                <button onclick="askQuestion('What is my attendance?')">
+                    My Attendance
+                </button>
+
+                <button onclick="askQuestion('What is my average performance?')">
+                    My Average
+                </button>
+
+                <button onclick="askQuestion('Which subject is my best?')">
+                    Best Subject
+                </button>
+
+                <button onclick="askQuestion('Which subject needs improvement?')">
+                    Need Improvement
+                </button>
+
+            </div>
+
+
+            <!-- ================================
+                 CHAT INPUT
+            ================================= -->
+
+            <div class="chat-input">
+
+                <input
+                    type="text"
+                    id="userMessage"
+                    placeholder="Ask about your academic progress..."
+                    autocomplete="off"
+                >
+
+                <button id="sendButton">
+                    Send
+                </button>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- ================================
+         JAVASCRIPT
+    ================================= -->
+
+    <script>
+
+        // =================================
+        // GET LOGGED-IN STUDENT
+        // =================================
+
+        const studentEmail =
+            localStorage.getItem("studentEmail");
+
+
+        // If student is not logged in
+        if (!studentEmail) {
+
+            window.location.href =
+                "student-login.html";
+
+        }
+
+
+        // =================================
+        // ELEMENTS
+        // =================================
+
+        const chatMessages =
+            document.getElementById("chatMessages");
+
+        const userMessage =
+            document.getElementById("userMessage");
+
+        const sendButton =
+            document.getElementById("sendButton");
+
+
+        // =================================
+        // ADD MESSAGE TO CHAT
+        // =================================
+
+        function addMessage(message, type) {
+
+            const messageDiv =
+                document.createElement("div");
+
+            messageDiv.className =
+                type + " chat-message";
+
+
+            if (type === "user") {
+
+                messageDiv.innerHTML = `
+                    <strong>You:</strong>
+                    <p>${message}</p>
+                `;
+
+            } else {
+
+                messageDiv.innerHTML = `
+                    <strong>EduTrack AI:</strong>
+                    <p>${message}</p>
+                `;
+
+            }
+
+
+            chatMessages.appendChild(
+                messageDiv
+            );
+
+
+            chatMessages.scrollTop =
+                chatMessages.scrollHeight;
+
+        }
+
+
+        // =================================
+        // ASK QUESTION
+        // =================================
+
+        function askQuestion(question) {
+
+            userMessage.value =
+                question;
+
+            sendMessage();
+
+        }
+
+
+        // =================================
+        // SEND MESSAGE
+        // =================================
+
+        async function sendMessage() {
+
+            const message =
+                userMessage.value.trim();
+
+
+            if (!message) {
+
+                return;
+
+            }
+
+
+            // Display user's question
+            addMessage(
+                message,
+                "user"
+            );
+
+
+            // Clear input
+            userMessage.value = "";
+
+
+            try {
+
+                // Show temporary message
+                addMessage(
+                    "Thinking...",
+                    "bot"
+                );
+
+
+                // Call chatbot API
+                const response =
+                    await fetch(
+                        `http://localhost:5001/api/chatbot/${encodeURIComponent(studentEmail)}`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                question: message
+                            })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                // Remove "Thinking..."
+                const thinkingMessages =
+                    chatMessages.querySelectorAll(
+                        ".bot.chat-message"
+                    );
+
+
+                if (thinkingMessages.length > 1) {
+
+                    thinkingMessages[
+                        thinkingMessages.length - 1
+                    ].remove();
+
+                }
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        "Unable to get chatbot response"
+                    );
+
+                }
+
+
+                // Display AI response
+                addMessage(
+                    data.answer ||
+                    "I couldn't find an answer.",
+                    "bot"
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Chatbot error:",
+                    error
+                );
+
+
+                // Remove thinking message
+                const thinkingMessages =
+                    chatMessages.querySelectorAll(
+                        ".bot.chat-message"
+                    );
+
+
+                if (thinkingMessages.length > 1) {
+
+                    thinkingMessages[
+                        thinkingMessages.length - 1
+                    ].remove();
+
+                }
+
+
+                addMessage(
+                    "Sorry, I couldn't connect to the EduTrack server. Please make sure the backend is running.",
+                    "bot"
+                );
+
+            }
+
+        }
+
+
+        // =================================
+        // SEND BUTTON
+        // =================================
+
+        sendButton.addEventListener(
+            "click",
+            sendMessage
+        );
+
+
+        // =================================
+        // ENTER KEY
+        // =================================
+
+        userMessage.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (event.key === "Enter") {
+
+                    sendMessage();
+
+                }
+
+            }
+        );
+
+
+        // =================================
+        // LOGOUT
+        // =================================
+
+        document.getElementById(
+            "logoutBtn"
+        ).addEventListener(
+            "click",
+            function() {
+
+                localStorage.removeItem(
+                    "studentEmail"
+                );
+
+                window.location.href =
+                    "student-login.html";
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>
