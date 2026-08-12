@@ -1,4 +1,4 @@
-const http = require("http");
+const http = require("https");
 
 const data = JSON.stringify({
     email: "maheswari@test.com",
@@ -6,8 +6,7 @@ const data = JSON.stringify({
 });
 
 const options = {
-    hostname: "localhost",
-    port: 5001,
+    hostname: "edutrack-website-710e.onrender.com",
     path: "/api/students/login",
     method: "POST",
     headers: {
