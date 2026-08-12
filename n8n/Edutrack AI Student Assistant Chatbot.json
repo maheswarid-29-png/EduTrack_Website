@@ -1,0 +1,98 @@
+{
+  "name": "Edutrack AI Student Assistant Chatbot",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -192,
+        -48
+      ],
+      "id": "a0f44935-2262-4d9f-a1a9-596cfba45c8e",
+      "name": "When chat message received",
+      "webhookId": "a82ed123-3e10-4139-99c7-d8a589a98e47"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You arYou are EduTrack AI Assistant.\nHelp students with academic guidance, attendance improvement, study tips, and learning support.\nAnswer questions in a simple and clear way."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        32,
+        -48
+      ],
+      "id": "d62df605-8f8c-475f-92de-40da32a3f541",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -112,
+        160
+      ],
+      "id": "07fad856-2a88-4532-a7fa-f6f57fc796fe",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "K0chTZG8xfxJsXdz",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "d1911ad4-29e2-4a33-aeac-2dde7907e2da",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5c28ed6eadaa004090bbb832fd92937904cddb1ec913d83170bcd35a381b8357"
+  },
+  "nodeGroups": [],
+  "id": "uoZZeSdpKsN93iEt",
+  "tags": []
+}
