@@ -85,7 +85,73 @@
 
         </div>
 
+        <!-- ADD ATTENDANCE -->
 
+<div
+    class="performance-summary"
+    style="margin-top:30px;">
+
+    <h2>
+        ➕ Add Attendance
+    </h2>
+
+    <form id="attendanceForm">
+
+        <div class="form-group">
+
+            <label for="attendanceDate">
+                Date
+            </label>
+
+            <input
+                type="date"
+                id="attendanceDate"
+                required>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="attendanceStatus">
+                Status
+            </label>
+
+            <select
+                id="attendanceStatus"
+                required>
+
+                <option value="">
+                    Select Status
+                </option>
+
+                <option value="Present">
+                    Present
+                </option>
+
+                <option value="Absent">
+                    Absent
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="login-btn">
+
+            Save Attendance
+
+        </button>
+
+
+        <p id="attendanceMessage"></p>
+
+    </form>
+
+</div>
         <!-- ATTENDANCE SUMMARY -->
 
         <div
@@ -620,7 +686,129 @@
             }
 
         }
+                 /* =========================
+           ADD ATTENDANCE
+        ========================== */
 
+        document.getElementById(
+            "attendanceForm"
+        ).addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+
+                const date =
+                    document.getElementById(
+                        "attendanceDate"
+                    ).value;
+
+
+                const status =
+                    document.getElementById(
+                        "attendanceStatus"
+                    ).value;
+
+
+                const message =
+                    document.getElementById(
+                        "attendanceMessage"
+                    );
+
+
+                message.textContent =
+                    "Saving attendance...";
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "https://edutrack-website-710e.onrender.com/api/attendance",
+                            {
+
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body: JSON.stringify({
+
+                                    studentEmail:
+                                        studentEmail,
+
+                                    date:
+                                        date,
+
+                                    status:
+                                        status
+
+                                })
+
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        message.textContent =
+                            data.message ||
+                            "Unable to save attendance.";
+
+                        message.style.color =
+                            "red";
+
+                        return;
+
+                    }
+
+
+                    message.textContent =
+                        "✅ Attendance saved successfully!";
+
+                    message.style.color =
+                        "green";
+
+
+                    document.getElementById(
+                        "attendanceForm"
+                    ).reset();
+
+
+                    /*
+                     * Reload attendance immediately
+                     */
+
+                    loadAttendance();
+
+
+                }
+
+                catch (error) {
+
+                    console.error(
+                        "Add attendance error:",
+                        error
+                    );
+
+
+                    message.textContent =
+                        "❌ Unable to connect to the server.";
+
+                    message.style.color =
+                        "red";
+
+                }
+
+            }
+        );
 
 
         /* =========================
