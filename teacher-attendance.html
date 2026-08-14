@@ -85,73 +85,78 @@
 
         </div>
 
+
+
         <!-- ADD ATTENDANCE -->
 
-<div
-    class="performance-summary"
-    style="margin-top:30px;">
+        <div
+            class="performance-summary"
+            style="margin-top:30px;">
 
-    <h2>
-        ➕ Add Attendance
-    </h2>
+            <h2>
+                ➕ Add Attendance
+            </h2>
 
-    <form id="attendanceForm">
+            <form id="attendanceForm">
 
-        <div class="form-group">
+                <div class="form-group">
 
-            <label for="attendanceDate">
-                Date
-            </label>
+                    <label for="attendanceDate">
+                        Date
+                    </label>
 
-            <input
-                type="date"
-                id="attendanceDate"
-                required>
+                    <input
+                        type="date"
+                        id="attendanceDate"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="attendanceStatus">
+                        Status
+                    </label>
+
+                    <select
+                        id="attendanceStatus"
+                        required>
+
+                        <option value="">
+                            Select Status
+                        </option>
+
+                        <option value="Present">
+                            Present
+                        </option>
+
+                        <option value="Absent">
+                            Absent
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="login-btn">
+
+                    Save Attendance
+
+                </button>
+
+
+                <p id="attendanceMessage"></p>
+
+            </form>
 
         </div>
 
 
-        <div class="form-group">
 
-            <label for="attendanceStatus">
-                Status
-            </label>
-
-            <select
-                id="attendanceStatus"
-                required>
-
-                <option value="">
-                    Select Status
-                </option>
-
-                <option value="Present">
-                    Present
-                </option>
-
-                <option value="Absent">
-                    Absent
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <button
-            type="submit"
-            class="login-btn">
-
-            Save Attendance
-
-        </button>
-
-
-        <p id="attendanceMessage"></p>
-
-    </form>
-
-</div>
         <!-- ATTENDANCE SUMMARY -->
 
         <div
@@ -253,6 +258,9 @@
 
         </div>
 
+
+
+        <!-- BACK BUTTON -->
 
         <div style="margin-top:30px;">
 
@@ -388,11 +396,6 @@
 
             try {
 
-                /*
-                 * First try the selected student's
-                 * attendance endpoint.
-                 */
-
                 const response =
                     await fetch(
                         `https://edutrack-website-710e.onrender.com/api/attendance/${encodeURIComponent(studentEmail)}`
@@ -443,15 +446,18 @@
 
                     `;
 
+
                     document.getElementById(
                         "attendancePercentage"
                     ).textContent =
                         "0%";
 
+
                     document.getElementById(
                         "presentCount"
                     ).textContent =
                         "0";
+
 
                     document.getElementById(
                         "absentCount"
@@ -686,7 +692,10 @@
             }
 
         }
-                 /* =========================
+
+
+
+        /* =========================
            ADD ATTENDANCE
         ========================== */
 
@@ -723,6 +732,12 @@
 
                 try {
 
+
+                    /* =========================
+                       1. SAVE ATTENDANCE
+                       TO MONGODB
+                    ========================== */
+
                     const response =
                         await fetch(
                             "https://edutrack-website-710e.onrender.com/api/attendance",
@@ -731,8 +746,10 @@
                                 method: "POST",
 
                                 headers: {
+
                                     "Content-Type":
                                         "application/json"
+
                                 },
 
                                 body: JSON.stringify({
@@ -770,21 +787,333 @@
                     }
 
 
+
+                    /* =========================
+                       2. GET UPDATED ATTENDANCE
+                    ========================== */
+
+                    const attendanceResponse =
+                        await fetch(
+                            `https://edutrack-website-710e.onrender.com/api/attendance/${encodeURIComponent(studentEmail)}`
+                        );
+
+
+                    const attendanceData =
+                        await attendanceResponse.json();
+
+
+                    if (!attendanceResponse.ok) {
+
+                        throw new Error(
+                            attendanceData.message ||
+                            "Unable to fetch updated attendance"
+                        );
+
+                    }
+
+
+                    const attendance =
+                        Array.isArray(
+                            attendanceData
+                        )
+                            ? attendanceData
+                            : attendanceData.attendance || [];
+
+
+
+                    /* =========================
+                       3. CALCULATE UPDATED
+                          ATTENDANCE
+                    ========================== */
+
+                    const total =
+                        attendance.length;
+
+
+                    const present =
+                        attendance.filter(
+                            record =>
+                                String(
+                                    record.status
+                                ).toLowerCase() ===
+                                "present"
+                        ).length;
+
+
+                    const absent =
+                        attendance.filter(
+                            record =>
+                                String(
+                                    record.status
+                                ).toLowerCase() ===
+                                "absent"
+                        ).length;
+
+
+                    const attendancePercentage =
+                        total > 0
+                            ? (
+                                present /
+                                total
+                            ) * 100
+                            : 0;
+
+
+
+                    console.log(
+                        "Updated Attendance:",
+                        attendancePercentage
+                    );
+
+
+
+                    /* =========================
+                       4. SEND ATTENDANCE
+                          TO N8N
+                    ========================== */
+
+                    try {
+
+                        const n8nResponse =
+                            await fetch(
+                                "https://samueldaniel03.app.n8n.cloud/webhook-test/cfeaaf3c-4fcf-4c53-8795-07bfc096d669",
+                                {
+
+                                    method: "POST",
+
+                                    headers: {
+
+                                        "Content-Type":
+                                            "application/json"
+
+                                    },
+
+                                    body:
+                                        JSON.stringify({
+
+                                            "Student Email":
+                                                studentEmail,
+
+                                            "Attendance Percentage ":
+                                                Number(
+                                                    attendancePercentage.toFixed(2)
+                                                ),
+
+                                            "Date":
+                                                date,
+
+                                            "Status":
+                                                status
+
+                                        })
+
+                                }
+                            );
+
+
+                        console.log(
+                            "n8n response status:",
+                            n8nResponse.status
+                        );
+
+
+                    }
+
+                    catch (n8nError) {
+
+                        /*
+                         * n8n failure should NOT
+                         * break attendance saving.
+                         */
+
+                        console.error(
+                            "n8n connection error:",
+                            n8nError
+                        );
+
+                    }
+
+
+
+                    /* =========================
+                       5. SUCCESS MESSAGE
+                    ========================== */
+
                     message.textContent =
-                        "✅ Attendance saved successfully!";
+    "✅ Attendance saved successfully!";
 
-                    message.style.color =
-                        "green";
-
-
-                    document.getElementById(
-                        "attendanceForm"
-                    ).reset();
+message.style.color =
+    "green";
 
 
-                    /*
-                     * Reload attendance immediately
-                     */
+document.getElementById(
+    "attendanceForm"
+).reset();
+
+
+await sendAttendanceToN8N();
+
+loadAttendance();
+/* =========================
+   SEND ATTENDANCE TO N8N
+========================= */
+
+async function sendAttendanceToN8N() {
+
+    try {
+
+        /* Get latest attendance records */
+
+        const response =
+            await fetch(
+                `https://edutrack-website-710e.onrender.com/api/attendance/${encodeURIComponent(studentEmail)}`
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            console.error(
+                "Unable to get attendance for n8n"
+            );
+
+            return;
+
+        }
+
+
+        const attendance =
+            Array.isArray(data)
+                ? data
+                : data.attendance || [];
+
+
+        if (attendance.length === 0) {
+
+            return;
+
+        }
+
+
+        /* Calculate attendance */
+
+        const present =
+            attendance.filter(
+                record =>
+                    String(
+                        record.status
+                    ).toLowerCase() === "present"
+            ).length;
+
+
+        const absent =
+            attendance.filter(
+                record =>
+                    String(
+                        record.status
+                    ).toLowerCase() === "absent"
+            ).length;
+
+
+        const total =
+            attendance.length;
+
+
+        const attendancePercentage =
+            (
+                present / total
+            ) * 100;
+
+
+        /* Get student name */
+
+        const profileResponse =
+            await fetch(
+                `https://edutrack-website-710e.onrender.com/api/students/profile/${encodeURIComponent(studentEmail)}`
+            );
+
+
+        const profileData =
+            await profileResponse.json();
+
+
+        const student =
+            profileData.student;
+
+
+        /* Send data to n8n */
+
+        const n8nResponse =
+            await fetch(
+                "https://samueldaniel03.app.n8n.cloud/webhook/cfeaaf3c-4fcf-4c53-8795-07bfc096d669",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        "Student Name":
+                            student.name,
+
+                        "Student Email":
+                            student.email,
+
+                        "Attendance Percentage":
+                            Number(
+                                attendancePercentage.toFixed(2)
+                            ),
+
+                        "Present":
+                            present,
+
+                        "Absent":
+                            absent,
+
+                        "Total Classes":
+                            total
+
+                    })
+
+                }
+            );
+
+
+        const n8nData =
+            await n8nResponse.text();
+
+
+        console.log(
+            "n8n response:",
+            n8nData
+        );
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "n8n attendance alert error:",
+            error
+        );
+
+    }
+
+}
+
+
+
+                    /* =========================
+                       6. RELOAD ATTENDANCE
+                    ========================== */
 
                     loadAttendance();
 
@@ -811,6 +1140,7 @@
         );
 
 
+
         /* =========================
            LOGOUT
         ========================== */
@@ -821,9 +1151,11 @@
                 "teacherLoggedIn"
             );
 
+
             localStorage.removeItem(
                 "selectedStudentEmail"
             );
+
 
             window.location.href =
                 "teacher-login.html";
